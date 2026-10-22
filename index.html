@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuickBite - Online Food Delivery | Experiment 7</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#fff8f0;color:#333}
+header{background:#e84d20;color:white;text-align:center;padding:22px}header h1{margin:0}
+nav{background:#292929;padding:14px;text-align:center}nav a{color:white;text-decoration:none;margin:0 18px}
+.hero{text-align:center;padding:30px 15px;background:#ffe5d6}.hero h2{color:#d94017}
+.menu{display:flex;justify-content:center;flex-wrap:wrap;gap:22px;padding:25px 15px}
+.food-card{background:white;width:230px;padding:22px;text-align:center;border-radius:12px;box-shadow:0 4px 14px #00000015}
+.food-icon{font-size:55px}.food-card h3{color:#e84d20}
+input{width:75px;padding:9px;border:1px solid #ccc;border-radius:5px}
+button{background:#e84d20;color:white;border:0;padding:12px 20px;border-radius:6px;cursor:pointer;font-size:15px}
+button:hover{background:#bd3513}.bill{max-width:480px;margin:25px auto;padding:22px;background:white;border-radius:12px;box-shadow:0 4px 14px #00000015}
+.bill h2{text-align:center;color:#d94017}.bill p{display:flex;justify-content:space-between}
+.total{font-size:20px;font-weight:bold;color:#d94017}#message{display:none;text-align:center;color:green;font-weight:bold}
+footer{background:#292929;color:white;padding:16px;text-align:center}
+@media(max-width:600px){.menu{flex-direction:column;align-items:center}.food-card{width:90%}.bill{margin:20px 12px}}
+</style>
+</head>
+<body>
+<header><h1>🍔 QuickBite</h1><p>Fresh Food, Fast Delivery!</p></header>
+<nav><a href="#home">Home</a><a href="#menu">Menu</a><a href="#bill">My Order</a></nav>
+<section class="hero" id="home"><h2>Your Favourite Food, Delivered!</h2><p>Choose your favourite meals and order online.</p></section>
+<h2 id="menu" style="text-align:center">Our Food Menu</h2>
+<section class="menu">
+<div class="food-card"><div class="food-icon">🍔</div><h3>Classic Burger</h3><p>Price: ₹120</p><label for="burger">Quantity:</label> <input type="number" id="burger" value="0" min="0" max="99"></div>
+<div class="food-card"><div class="food-icon">🍕</div><h3>Margherita Pizza</h3><p>Price: ₹250</p><label for="pizza">Quantity:</label> <input type="number" id="pizza" value="0" min="0" max="99"></div>
+<div class="food-card"><div class="food-icon">🍟</div><h3>French Fries</h3><p>Price: ₹90</p><label for="fries">Quantity:</label> <input type="number" id="fries" value="0" min="0" max="99"></div>
+<div class="food-card"><div class="food-icon">🍰</div><h3>Chocolate Cake</h3><p>Price: ₹150</p><label for="cake">Quantity:</label> <input type="number" id="cake" value="0" min="0" max="99"></div>
+</section>
+<div style="text-align:center"><button id="calculate">Calculate Bill</button></div>
+<section class="bill" id="bill">
+<h2>🧾 Order Summary</h2>
+<p><span>Burger Total</span><strong id="btotal">₹0</strong></p>
+<p><span>Pizza Total</span><strong id="ptotal">₹0</strong></p>
+<p><span>Fries Total</span><strong id="ftotal">₹0</strong></p>
+<p><span>Cake Total</span><strong id="ctotal">₹0</strong></p><hr>
+<p><span>Subtotal</span><strong id="subtotal">₹0</strong></p>
+<p><span>Delivery Fee</span><strong id="delivery">₹0</strong></p>
+<p class="total"><span>Grand Total</span><span id="grandtotal">₹0</span></p>
+<div style="text-align:center"><button id="order">Place Order</button></div><p id="message"></p>
+</section>
+<footer><p>© 2026 QuickBite | Online Food Delivery</p></footer>
+<script>
+$(document).ready(function(){
+  let calculated=false;
+  $("#calculate").click(function(){
+    const quantities=[$("#burger").val(),$("#pizza").val(),$("#fries").val(),$("#cake").val()].map(Number);
+    if(quantities.some(q=>!Number.isInteger(q)||q<0||q>99)){
+      alert("Enter valid quantities from 0 to 99.");calculated=false;return;
+    }
+    const [b,p,f,c]=quantities;
+    if(b+p+f+c===0){alert("Please select at least one food item.");calculated=false;return;}
+    const burgerTotal=b*120,pizzaTotal=p*250,friesTotal=f*90,cakeTotal=c*150;
+    const subtotal=burgerTotal+pizzaTotal+friesTotal+cakeTotal;
+    const delivery=subtotal>=500?0:40,grandTotal=subtotal+delivery;
+    $("#btotal").text("₹"+burgerTotal);$("#ptotal").text("₹"+pizzaTotal);
+    $("#ftotal").text("₹"+friesTotal);$("#ctotal").text("₹"+cakeTotal);
+    $("#subtotal").text("₹"+subtotal);$("#delivery").text("₹"+delivery);
+    $("#grandtotal").text("₹"+grandTotal);$("#message").hide().text("");
+    calculated=true;
+  });
+  $("input").on("input",function(){calculated=false;$("#message").hide().text("");});
+  $("#order").click(function(){
+    if(!calculated){alert("Please calculate your bill first.");return;}
+    $("#message").text("Your order has been placed successfully!").fadeIn();
+  });
+});
+</script>
+</body>
+</html>
